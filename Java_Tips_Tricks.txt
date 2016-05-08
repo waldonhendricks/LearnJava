@@ -1,0 +1,83 @@
+1.
+Why Java uses Heap instead of Stack
+http://stackoverflow.com/questions/15558245/why-does-java-use-heap-data-structure-to-store-object
+
+2.
+Access Specifiers
+    a. Public:    Everyone
+    b. Private:   Only that class
+    c. Protected: Inheriting Class
+    d. Default  : Class in the same package
+
+3.
+Early Binding
+    In Java, late binding is the default behavior
+
+4. 
+Object Base Class
+    All objects are inherited from Object Base Class
+
+5.
+What are Generics in Java
+    - A type of container
+
+6. 
+Heap and Stack Storage
+    - Objects are stored on Heap
+    - Primitive types are stored on Stack
+
+7.
+How Garbage Collector Works
+
+8.
+How JVM works
+
+9. What is Escape Analysis:
+http://programmers.stackexchange.com/questions/65281/stack-and-heap-memory-in-java
+    - Escape analysis determines all the places where a pointer can be stored and whether the lifetime of the pointer can be proven to be restricted only to the current procedure and/or thread.
+    - JVMs can use a technique called escape analysis, by which they can tell that certain objects remain confined to a single thread for their entire lifetime, and that lifetime is bounded by the lifetime of a given stack frame.
+    - Such objects can be safely allocated on the stack instead of the heap.
+    - Even better, for small objects, the JVM can optimize away the allocation entirely and simply hoist the object's fields into registers.
+    
+    Thus, if you have code that looks like:
+
+        void foo(int arg) {
+            Bar qux = new Bar(arg);
+            ...
+        }
+
+    where the ... doesn't allow qux to leave that scope, qux may be allocated on the stack instead.
+    This is actually a win for the VM because it means it doesn't need to ever be garbage collected - it will disappear when it leaves the scope
+
+10. Where objects are stored in Java
+http://programmers.stackexchange.com/questions/65281/stack-and-heap-memory-in-java
+    - Java only stores primitives on the stack.
+    - Objects are created on the heap
+
+    - Only REFERENCES (which in turn are primitives) are passed around on the stack.
+
+    - An OBJECT with all its variables are PUT on HEAP
+
+    class A {
+       int a ;
+       String b;
+       //getters and setters
+    }
+
+    - Where will the primitive a in class A be stored?
+        - Depends on Escape analysis and JVM
+
+    - Why does heap memory exist at all? Why can't we store everything on the stack?
+        - Then we would have to pass the full set of values from one function to another.
+        - With heap only a reference to it is required.
+        - You could have a huge string that occupies the entire stack memory
+
+    - Why Stack memory exists ?
+        - Compilers can have stuffs without a stack
+        - Eg BASICS which just had 8 registers
+        - STACK gets rid of MEMORY FRAGMENTATION
+        - Advantage of SCOPE. On leaving the SCOPE the stack is popped.
+
+
+
+
