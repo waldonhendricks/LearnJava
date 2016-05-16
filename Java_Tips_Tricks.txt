@@ -1,3 +1,20 @@
+1. Why Java uses Heap instead of Stack
+2. Access Specifiers
+3. Early Binding
+4. Object Base Class
+5. What are Generics in Java
+6. Heap and Stack Storage
+7. How Garbage Collector Works
+8. How JVM works
+9. What is Escape Analysis:
+10. Where objects are stored in Java
+11. Hashtable HashMap LinkedHashMap TreeMap
+12. How to make System.out.println() shorter
+13. Using int vs Integer
+14. How do I apply the for-each loop to every character in a String
+15. Why can Java Collections not directly store Primitives types
+
+
 1.
 Why Java uses Heap instead of Stack
 http://stackoverflow.com/questions/15558245/why-does-java-use-heap-data-structure-to-store-object
@@ -19,7 +36,65 @@ Object Base Class
 
 5.
 What are Generics in Java
+http://docs.oracle.com/javase/tutorial/java/generics/erasure.html
+http://stackoverflow.com/questions/490091/java-generics
     - A type of container
+
+    Type Erasure
+    Generics were introduced to the Java language to provide tighter type checks at compile time and to support generic programming. To implement generics, the Java compiler applies type erasure to:
+
+        Replace all type parameters in generic types with their bounds or Object if the type parameters are unbounded. The produced bytecode, therefore, contains only ordinary classes, interfaces, and methods.
+        Insert type casts if necessary to preserve type safety.
+        Generate bridge methods to preserve polymorphism in extended generic types.
+
+    Type erasure ensures that no new classes are created for parameterized types; consequently, generics incur no runtime overhead.
+
+    Vectors hold any old object you give them.
+        V.add("This is an element");
+        V.add(new Integer(2));
+        v.add(new Hashtable());
+
+    To get back the item
+        String s = (String) v.get(0);
+        Integer i = (Integer) v.get(1);
+        Hashtable h = (Hashtable) v.get(2);
+    
+    Generics attempt to create strongly typed classes to do generic operations.
+        ArrayList<String> aList = new ArrayList<String>();
+        aList.add("One");
+        String element = aList.get(0); // no cast needed
+        System.out.println("Got one: " + element);
+
+http://www.tutorialspoint.com/java/java_generics.htm
+        public class GenericMethodTest
+        {
+           // generic method printArray                         
+           public static < E > void printArray( E[] inputArray )
+           {
+              // Display array elements              
+                 for ( E element : inputArray ){        
+                    System.out.printf( "%s ", element );
+                 }
+                 System.out.println();
+            }
+
+            public static void main( String args[] )
+            {
+                // Create arrays of Integer, Double and Character
+                Integer[] intArray = { 1, 2, 3, 4, 5 };
+                Double[] doubleArray = { 1.1, 2.2, 3.3, 4.4 };
+                Character[] charArray = { 'H', 'E', 'L', 'L', 'O' };
+
+                System.out.println( "Array integerArray contains:" );
+                printArray( intArray  ); // pass an Integer array
+
+                System.out.println( "\nArray doubleArray contains:" );
+                printArray( doubleArray ); // pass a Double array
+
+                System.out.println( "\nArray characterArray contains:" );
+                printArray( charArray ); // pass a Character array
+            } 
+        }
 
 6. 
 Heap and Stack Storage
@@ -28,11 +103,77 @@ Heap and Stack Storage
 
 7.
 How Garbage Collector Works
+http://stackoverflow.com/questions/774357/how-does-the-garbage-collection-mechanism-work
+
+    - The way actual memory gets allocated to variables and the way it is reclaimed is abstracted from the programmer.
+    - The acutal where the memory gets allocated is abstracted
+
+    - When the GARBAGE COLLECTOR runs it will check if we still hold a reference to an object. If not it will free that memory.
+
+    SIMPLEST:
+        Reference counting:
+            - Whenever an object gets referenced, a count is incremented
+            - GARBAGE Collector moves through ALL THE OBJECTS and frees the ones that has ref count as ZERO
+            PROBLEM:
+            - Circular reference
+
+    MARK and SWEEP
+        The mark and sweep algorithm works by periodically stopping the execution of the program, mark each item the program has allocated as unreachable.
+        The program then runs through all the variables the program has and marks what they point to as reachable.
+        If either of these allocations contain references to other data in the program, that data is then likewise marked as reachable, etc.
+
+        This is the mark part of the algorithm.
+        At this point everything the program can access, no matter how indirectly, is marked as reachable and everything the program can't reach is marked as unreachable.
+        The garbage collector can now safely reclaim the memory associated with the objects marked as unreachable.
+
+        SWEEP: takes care of freeing all objexts that are not reachable
+
+        PROBLEM:
+            - Entire Program has to be stopped
+
+    ADAPTIVE GARBAGE COLLECTION:
+        - START @ RAM's static and stack portion and go through all the OBJECTS
+        - Copy all live objects to ANOTHER HEAP. 
+        - Remove the objects from original heap
+
+        PROBLEM:
+            - Twice the memory
+
+        SOLUTION:
+            - Once program is stable, don't have to KEEP copying as LITTLE or NO GARBAGE would be generated.
+            - JVM detects this and switch to M&S
 
 8.
 How JVM works
+https://www.youtube.com/watch?v=viS5d8DA_VI
+    a1.c ---              a1.obj
+            |
+            |
+    a2.c ---> COMPILER -- a2.obj ---> LINKER --> a.exe
+            |
+            |
+    a3.c ---              a3.obj
 
-9. What is Escape Analysis:
+    LOADER puts a.exe into Main Memory
+
+    IN JAVA:
+        - .class FILE CONTAINS the BYTECODE
+        - NO LINKING IS DONE
+        - JVM RESIDES on RAM
+
+        a1.java                 a1.class
+
+        a2.java ---> COMPILER ->a2.class
+
+        a3.java                 a3.class
+
+        - CLASS LOADER puts all the CLASS files ONTO RAM
+        - BYTECODE Verifier verfies the Byte Code
+            - Checks for ACCESS VIOLATION errors etc
+        - EXECUTION ENGINE
+            - USE JIT COMPILER and converts BYTE CODE into MACHINE CODE
+9.
+What is Escape Analysis:
 http://programmers.stackexchange.com/questions/65281/stack-and-heap-memory-in-java
     - Escape analysis determines all the places where a pointer can be stored and whether the lifetime of the pointer can be proven to be restricted only to the current procedure and/or thread.
     - JVMs can use a technique called escape analysis, by which they can tell that certain objects remain confined to a single thread for their entire lifetime, and that lifetime is bounded by the lifetime of a given stack frame.
@@ -49,8 +190,10 @@ http://programmers.stackexchange.com/questions/65281/stack-and-heap-memory-in-ja
     where the ... doesn't allow qux to leave that scope, qux may be allocated on the stack instead.
     This is actually a win for the VM because it means it doesn't need to ever be garbage collected - it will disappear when it leaves the scope
 
-10. Where objects are stored in Java
+10.
+Where objects are stored in Java
 http://programmers.stackexchange.com/questions/65281/stack-and-heap-memory-in-java
+http://stackoverflow.com/questions/3646632/do-java-primitives-go-on-the-stack-or-the-heap
     - Java only stores primitives on the stack.
     - Objects are created on the heap
 
@@ -78,6 +221,96 @@ http://programmers.stackexchange.com/questions/65281/stack-and-heap-memory-in-ja
         - STACK gets rid of MEMORY FRAGMENTATION
         - Advantage of SCOPE. On leaving the SCOPE the stack is popped.
 
+    Primitives defined locally would be on the stack. However if a primitive were defined as part of an instance of an object, that primitive would be on the heap.
 
+        public class Test
+        {
+            private static class HeapClass
+            {
+                public int y; // When an instance of HeapClass is allocated, this will be on the heap.
+            }
+            public static void main(String[] args)
+            {
+                int x=1; // This is on the stack.
+            }
+        }
 
+    Objects do not have their own stack.
+    In my example, int y would actually be part of each instance of HeapClass.
+    Whenever an instance of HeapClass is allocated (e.g. new HeapClass()), all member variables of HeapClass are added to the heap.
+    Thus, since instances of HeapClass are being allocated on the heap, int y would be on the heap as part of an instance of HeapClass.
 
+    However, all primitive variables declared in the body of any method would be on the stack.
+
+    As you can see in the above example, int x is on the stack because it is declared in a method body--not as a member of a class.
+
+11.
+Hashtable HashMap LinkedHashMap TreeMap
+http://www.programcreek.com/2013/03/hashmap-vs-treemap-vs-hashtable-vs-linkedhashmap/
+
+    There are 4 commonly used implementations of Map in Java SE - HashMap, TreeMap, Hashtable and LinkedHashMap.
+    If we use only one sentence to describe each implementation, it would be the following:
+
+        HashMap is implemented as a hash table, and there is no ordering on keys or values.
+        TreeMap is implemented based on red-black tree structure, and it is ordered by the key.
+        LinkedHashMap preserves the insertion order
+        Hashtable is synchronized, in contrast to HashMap. It has an overhead for synchronization.
+
+        This is the reason that HashMap should be used if the program is thread-safe. 
+
+12.
+How to make System.out.println() shorter
+http://stackoverflow.com/questions/3320764/how-to-make-system-out-println-shorter
+
+    void println(Object line) {
+        System.out.println(line);
+    }
+
+    println("Hello World");
+
+13.
+Using int vs Integer
+http://stackoverflow.com/questions/564/what-is-the-difference-between-an-int-and-an-integer-in-java-and-c?rq=1
+
+    If you can use int do so.
+    If the value can be null or is used as an Object e.g. Generics, use Integer
+
+    In Java an int is a primitive while an Integer is an Object. Meaning, if you made a new Integer:
+        Integer i = new Integer(6);
+
+    You could call some method on i:
+        String s = i.toString();//sets s the string representation of i
+
+    Whereas with an int:
+        int i = 6;
+
+    You cannot call any methods on it, because it is simply a primitive. So:
+        String s = i.toString();//will not work!!!
+
+14.
+How do I apply the for-each loop to every character in a String
+http://stackoverflow.com/questions/2451650/how-do-i-apply-the-for-each-loop-to-every-character-in-a-string
+
+    for (char ch: "xyz".toCharArray()) {
+    }
+
+15.
+Why can Java Collections not directly store Primitives types
+http://stackoverflow.com/questions/2504959/why-can-java-collections-not-directly-store-primitives-types
+
+    It was a Java design decision, and one that some consider a mistake.
+    Containers want Objects and primitives don't derive from Object.
+
+16.
+Why is Java Vector class considered obsolete or deprecated
+http://stackoverflow.com/questions/1386275/why-is-java-vector-class-considered-obsolete-or-deprecated
+
+    Vector synchronizes on each individual operation.
+    That's almost never what you want to do.
+
+    Generally you want to synchronize a whole sequence of operations.
+    Synchronizing individual operations is both less safe (if you iterate over a Vector, for instance, you still need to take out a lock to avoid anyone else changing the collection at the same time, which would cause a ConcurrentModificationException in the iterating thread) but also slower (why take out a lock repeatedly when once will be enough)?
+
+    Of course, it also has the overhead of locking even when you don't need to.
+
+    Basically, it's a very flawed approach to synchronization in most situations.
