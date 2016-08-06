@@ -176,6 +176,7 @@ http://stackoverflow.com/questions/774357/how-does-the-garbage-collection-mechan
 8.
 How JVM works
 https://www.youtube.com/watch?v=viS5d8DA_VI
+
     a1.c ---              a1.obj
             |
             |
