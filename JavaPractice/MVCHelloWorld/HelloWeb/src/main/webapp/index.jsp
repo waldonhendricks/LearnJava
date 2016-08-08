@@ -15,5 +15,17 @@ pageEncoding="ISO-8859-1"%>
 			<a href="hello?name=Anit">Click Here</a>
 		</h3>
 	</center>
+	
+    <table>
+       <tr>
+           <td><label> Enter the password to enter: </label></td>
+           <td><input type="password" name="password"/></td>
+       </tr>
+       <tr>
+           <td></td>
+           <td><input type="submit" value="Enter"/></td>
+           <a href="LoginServlet?name=password">Enter</a>
+       </tr>
+   </table>  
 </body>
 </html>
