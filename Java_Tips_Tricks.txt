@@ -501,4 +501,15 @@ http://stackoverflow.com/questions/7080546/add-an-object-to-an-arraylist-and-mod
 
         System.out.println(list);   // still prints [foobar]
 
+22.
+Java Constructors and Super Class
+    
+    1. If the FIRST LINE of the constructor is NOT a call to Super Class Constructor OR a call
+    to ONE of its own constructor THEN the compiler will insert "super()" as the first line in
+    the constructor
 
+    2. Java WILL NOT insert a "super()" constructor if we already have one with arguments
+
+    3. Always have a constructor with NO ARGUMENTS as java could add a "super()" and try to call
+       a constructor with NO arguments.
+>>>>>>> 1410338b4b2d493fc743fab69b61a9f9c0a5a270
