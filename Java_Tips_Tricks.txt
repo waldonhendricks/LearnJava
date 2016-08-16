@@ -18,6 +18,7 @@
 18. Why is String immutable in Java
 19. What does String Immutable mean
 20. Combining charAt and IgnoreCasE
+21. Adding Object to an ArrayList adds its reference
 
 -------------------------------------------------------------------------------------------------
 
@@ -466,3 +467,38 @@ Combining charAt and IgnoreCasE
 http://stackoverflow.com/questions/28387134/combining-charat-and-ignorecase
 
     (Character.toLowerCase(newGame.charAt(0)) == 'y');
+
+21. Adding Object to an ArrayList adds its reference
+http://stackoverflow.com/questions/7080546/add-an-object-to-an-arraylist-and-modify-it-later
+    
+    Q. 
+    If I have an ArrayList, and I added an object to it, and later I modified this object, will this change reflect in the ArrayList?
+    Or when I add the object to the ArrayList, Java creates a copy and add it to the ArrayList?
+
+    What if I change the reference to this object to null?
+    Does that mean that the object in the ArrayList now null too?
+
+    Q: will this change reflect in the ArrayList?
+    A: Yes, since you added a reference to the object in the list. The reference you added will still point to the same object, (which you modified).
+
+    Q: or when I add the object to the ArrayList, Java creates a copy and add it to the ArrayList?
+    A: No, it won't copy the object. (It will copy the reference to the object.)
+
+    Q: What if I change the reference to this object to null? Does that mean that the object in the ArrayList now null too?
+    A: No, since the content of the original reference was copied when added to the list. (Keep in mind that it is the reference that is copied, not the object.)
+
+        Demonstration:
+        StringBuffer sb = new StringBuffer("foo");
+
+        List<StringBuffer> list = new ArrayList<StringBuffer>();
+        list.add(sb);
+
+        System.out.println(list);   // prints [foo]
+        sb.append("bar");
+
+        System.out.println(list);   // prints [foobar]
+        sb = null;
+
+        System.out.println(list);   // still prints [foobar]
+
+
