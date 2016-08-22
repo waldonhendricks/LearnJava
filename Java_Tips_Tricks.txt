@@ -20,6 +20,7 @@
 20. Combining charAt and IgnoreCasE
 21. Adding Object to an ArrayList adds its reference
 22. Java Constructors and Super Class
+23. Exceptions
 
 -------------------------------------------------------------------------------------------------
 
@@ -513,4 +514,17 @@ Java Constructors and Super Class
 
     3. Always have a constructor with NO ARGUMENTS as java could add a "super()" and try to call
        a constructor with NO arguments.
->>>>>>> 1410338b4b2d493fc743fab69b61a9f9c0a5a270
+
+23.
+Exceptions
+    - If a client can reasonably be expected to recover from an exception, make it a checked exception.
+    - If a client cannot do anything to recover from the exception, make it an unchecked exception
+
+    Checked Exception vs Unchecked Exception:
+        - Checked Exception should be DECLARED in the method
+
+        - Common exception such as NULL pointer exceptions are Unchecked exceptions
+
+    UNCHECKED:
+        - Unchecked are the exceptions that are not checked at compiled time.
+        - In C++, all exceptions are unchecked, so it is not forced by the compiler to either handle or specify the exception.
