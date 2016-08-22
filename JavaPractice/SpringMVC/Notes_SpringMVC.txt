@@ -1,0 +1,202 @@
+Udemy course on Spring MVC:
+https://www.udemy.com/spring-tutorial-for-beginners/
+
+Lecture 4:
+Dependency Injection, Autowiring, Component Scan
+
+    SPRING IOC:
+    - Spring IOC (Inversion of Control) container, takes care of creating the bean that we need.
+    - Sping IOC container Manages the Bean
+
+    - ADV: Instead of creating an object, we let Spring take care of it.
+    So,
+    1. Spring -> create a service
+    2. Spring -> Needs to give the created service to our Dependency class
+
+    ToDo that, add "@Component" to the class
+        - This defines a bean
+        - A "Component" is a bean that will be managed by the Spring IOC Container
+
+    Autowired: Take a bean (OR service) and injects in the other code "@Autowired"
+        - Meaning this class needs to be serviced.
+        - Find the right BEAN and inject it.
+
+
+    MANUAL Way:
+    FileName: DependencyInjectionExamples.java
+        // Create a Spring Framework
+        @RunWith(SpringJUnit4ClassRunner.class)
+
+        // All the components needed by Spring to Manage these beans are present in the 
+        // xml file
+        // This XML file forms the CHUNK of the Application Context
+        // This is the one that Spring uses to launch the bean
+        @ContextConfiguration(locations = { "/TestContext.xml" })
+        public class DependencyInjectionEg
+        {
+            @Autowired
+            HiService service;
+            // If we don't have @Component below then we should do something like,
+            // HiService service = new HiService();
+
+            @Test
+            public void dummyTest()
+            {
+                S.o.pl(service.sayHi());
+            }
+        }
+
+        // Take care of above Step (1)
+        @Component  // This tag ensure that Spring takes care of everything
+        class HiService 
+        {
+            public String sayHi()
+            {
+                return "Hello World!";
+            }
+        }
+
+    QUES:
+        1. How does Spring know to search for Components OR Beans
+           i.e How does it know where to search in the package for "Component" tag
+
+           ANS:
+           - In the "TestContext.xml" we use something called "component-scan".
+           - It tell Spring, the PACKAGE where it should scan
+
+        2. Who is creating Spring
+           - We use "@RunWith(SpringJUnit4ClassRunner.class)"
+           - Now we should give an ApplicationContext to it.
+           - We do that using an ".xml" file using "@ContextConfigurations"
+
+           ANS:
+           - We are using @RunWith which uses the Context Configuration to launch Spring
+
+Section 3: Lecture 6: Autowiring
+    Spring establishes the connection either through class or through Interface
+
+    USING INTERFACE AND 2 COMPONENTS:
+        public class DependencyInjectionEg
+        {
+            @Autowired
+            // As genericService is an interface, try to find its implementations
+            // LEARN 1:
+            // If we have two components, then we can resolve them by having the SIMILAR
+            // name as class
+            // GenericService service;
+            // WAY 2:
+            @Qualifier(value = 'helloService')
+
+            GenericService helloService;
+
+            @Test
+            public void dummyTest()
+            {
+                S.o.pl(service.sayHi());
+            }
+        }
+
+        // Take care of above Step (1)
+        @Component  // This tag ensure that Spring takes care of everything
+        // We can also make spring "AUTO WIRE" an interface
+        class HiService implements GenericService
+        {
+            public String sayHi()
+            {
+                return "Hello World!";
+            }
+        }
+
+        // LEARN 1:
+        // Having another service throws and exception
+        @Component
+        class HelloService implements GenericService
+        {
+            public String sayHi()
+            {
+                return "Hello Hello World!";
+            }
+        }
+
+
+    - Spring would go through your file and Store all classes that have a component.
+    - Later when it finds autowired, it will try to find if a component exists for that Autowried service
+     
+    If an interface is used
+    - Spring will also search for Implementations of the Interface
+
+    QUES 1:
+        - What if we have two Components?
+          Then spring would through an exception
+          
+          ANS:
+          - It can be resolved by creating the variable with the SIMILAR name as class
+          - It does an CASE-INSENSITIVE Search
+
+          - Method 2:
+          - Use a QUALIFIER
+            Eg: @Qualifier(value = 'helloService'
+
+Section 3: Lecture 8
+    - CoreContainer
+      2 important parts:
+          1. Bean Factory
+             - Main interface that provide HANDLING of the beans
+          2. Application Context:
+            - Extends the bean factory and provides Additional functionalites on top of it.
+            - We were using this to launch our Spring beans
+            - Provides really good integration with MESSAGE RESOURCES
+            - It has Internationlization built within
+            - It has Specific EVENTS HANDLING
+
+        How to choose between BEAN FACTORY and APPLICATION CONTEXT
+            - Always prefer Application context over Bean Factory
+
+    ORM Framework:
+        - Hibernate
+    OXM
+        - XML to objects and Objects back to XML
+
+    Web Modules:
+        - Support for other MVC frameworks like Structs
+
+Section 4: Lecture 11:
+    - We can also SPECIFY CONTEXT using JAVA CODE instead of an XML FILE
+    - TWO STEPS:
+        1. Create Java Context and
+           Add "@Configuration" tag to the class
+        2. Specify the Component Scan
+           Add "@ComponentScan" tag to the class as well
+           Eg: @ComponentScan(basePackages = "com...."
+
+        3. Now use the Java context
+           @Context Configuration(class=JavaTest.class)
+
+        @Configuration
+        @ComponentScan(basePackages = "com.in28mins..")
+        class JavaTestContext { }
+
+        @RunWith(SpringJUnit4ClassRunner.class)
+        @ContextConfiguration(classes = JavaTestContext.class)
+        public class DependencyInjectionEg
+        {
+            @Autowired
+            HiService service;
+            // If we don't have @Component below then we should do something like,
+            // HiService service = new HiService();
+
+            @Test
+            public void dummyTest()
+            {
+                S.o.pl(service.sayHi());
+            }
+        }
+
+Section 4: Lecture 12:
+    - Till now we used Direct Injection
+      - We didn't use Constructor
+
+    - Spring USES REFLECTION to set the service.
+    - If we don't want spring to use REFLECTION
+
+
